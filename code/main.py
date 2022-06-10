@@ -31,33 +31,19 @@ def lossF(lossType, predictions, targets):
 
 def train(model,dataset,A0,ldi, optimizer, opt,i,fold_ROC,fold_AUPR):
 
-    i=i+1
+   
     model.train()
-    roc = []
-    pr = []
-
-    roc_max = 0
-    pr_max = 0
-
-    if args.shiyan ==1:
-        ldi = ldi[i - 1, :]
 
     for epoch in range(0, opt.epoch):
         model.zero_grad()
-
         score = model(dataset)
-
         loss =lossF('cross_entropy', score, A0.cuda())
-
         loss.backward()
         optimizer.step()
-
+        print(loss.item())
         score = score.detach().cpu().numpy()
         scoremin, scoremax = score.min(), score.max()
         score = (score - scoremin) / (scoremax - scoremin)
-
-        
-
     return score
 
 
@@ -65,24 +51,18 @@ def train(model,dataset,A0,ldi, optimizer, opt,i,fold_ROC,fold_AUPR):
 
 def crossCV(args):
 
-
-
     if args.data == 'Fdata':
         P = sio.loadmat(args.dataset_path + '/Fdata and Cdata/Fdataset.mat')
         ldi=P['didr'].transpose()
         
-
-
     A = torch.from_numpy(ldi).float()
     A = A.cuda()
-
 
     fold_ROC = []
     fold_AUPR = []
     
     dataset = data_pro(args)
     A0 = A.clone()
-
 
     model = DRMGCN(args)
     model.cuda()
@@ -91,12 +71,7 @@ def crossCV(args):
     fold_ROC, fold_AUPR = train(model, dataset,A0,ldi, optimizer, args,i,fold_ROC,fold_AUPR)
 
 
-    
 
 if __name__ == "__main__":
     args = parameter_parser()
-
     crossCV(args)
-
-
-
