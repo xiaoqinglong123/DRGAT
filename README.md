@@ -19,7 +19,6 @@ Run main.py to RUN DRMGCN.
 * Fdataset and Cdataset https://github.com/BioinformaticsCSU/BNNR
 * LRSSL https://github.com/linwang1982/DRIMC
 * Ldataset https://github.com/storyandwine/LAGCN
-* HDVD https://github.com/luckymengmeng/SCPMF
 
 #### Contacts
 
