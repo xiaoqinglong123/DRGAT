@@ -1,7 +1,5 @@
-import csv
 import torch
 import random
-import numpy as np
 import scipy.io as sio
 
 def get_edge_index(matrix):
@@ -17,24 +15,10 @@ def get_edge_index(matrix):
 def data_pro(args):
     dataset = dict()
 
-    if args.data == 'Ldata':
-        dataset['md_p'] = np.loadtxt(args.dataset_path + '/Ldata/dr_dis_association_mat.txt')
-        dataset['md_true'] = np.loadtxt(args.dataset_path + '/Ldata/dr_dis_association_mat.txt')
-    if args.data == 'Cdata':
-        P = sio.loadmat(args.dataset_path + '/Fdata and Cdata/Cdataset.mat')
-        dataset['md_p']=P['didr'].transpose()
-        dataset['md_true']=P['didr'].transpose()
     if args.data == 'Fdata':
         P = sio.loadmat(args.dataset_path + '/Fdata and Cdata/Fdataset.mat')
-        if args.shiyan == 0 or args.shiyan == 2:
-            dataset['md_p'] = P['didr'].transpose()
-            dataset['md_true'] = P['didr'].transpose()
-        if args.shiyan == 1:
-            dataset['md_p'] = P['didr']
-            dataset['md_true'] = P['didr']
-    if args.data == 'LRSSL':
-        dataset['md_p'] = np.loadtxt(args.dataset_path + '/LRSSL/drug-disease.txt')
-        dataset['md_true'] = np.loadtxt(args.dataset_path + '/LRSSL/drug-disease.txt')
+        dataset['md_p'] = P['didr'].transpose()
+        dataset['md_true'] = P['didr'].transpose()
 
     dataset['md_p']=torch.from_numpy(dataset['md_p']).float()
     dataset['md_true'] = torch.from_numpy(dataset['md_true']).float()
@@ -43,9 +27,7 @@ def data_pro(args):
     one_index = []
 
     for i in range(dataset['md_p'].size(0)):
-
         for j in range(dataset['md_p'].size(1)):
-
             if dataset['md_p'][i][j] < 1:
                 zero_index.append([i, j])
             if dataset['md_p'][i][j] >= 1:
@@ -57,39 +39,17 @@ def data_pro(args):
     dataset['md'] = dict()
     dataset['md']['train'] = [one_tensor, zero_tensor]
 
-
     "disease sim"
-    if args.data == 'LRSSL':
-        dd_f_matrix = np.loadtxt(args.dataset_path + '/LRSSL/sim_disease.txt')
-    if args.data == 'Cdata':
-        dd_f_matrix = P['disease']
     if args.data == 'Fdata':
-        if args.shiyan == 0 or args.shiyan == 2:
-            dd_f_matrix = P['disease']
-        if args.shiyan == 1:
-            dd_f_matrix = P['drug']
-    if args.data == 'Ldata':
-        dd_f_matrix = np.loadtxt(args.dataset_path + '/Ldata/dis_sim.txt')
+        dd_f_matrix = P['disease']
 
     dd_f_matrix = torch.from_numpy(dd_f_matrix).float()
     dd_f_edge_index = get_edge_index(dd_f_matrix)
     dataset['dd_f'] = {'data_matrix': dd_f_matrix, 'edges': dd_f_edge_index}
 
     "drug sim"
-    if args.data == 'Cdata':
-        mm_f_matrix = P['drug']
     if args.data == 'Fdata':
-        if args.shiyan == 0 or args.shiyan == 2:
-            mm_f_matrix = P['drug']
-        if args.shiyan == 1:
-            mm_f_matrix = P['disease']
-
-    if args.data == 'LRSSL':
-        mm_f_matrix = np.loadtxt(args.dataset_path + '/LRSSL/sim_drug_chemical.txt')
-
-    if args.data == 'Ldata':
-        mm_f_matrix = np.loadtxt(args.dataset_path + '/Ldata/structure_sim.txt')
-
+        mm_f_matrix = P['drug']
 
     mm_f_matrix = torch.from_numpy(mm_f_matrix).float()
     mm_f_edge_index = get_edge_index(mm_f_matrix)
@@ -97,5 +57,3 @@ def data_pro(args):
 
 
     return dataset
-
-
