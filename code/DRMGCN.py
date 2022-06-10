@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 from torch_geometric.nn import GCNConv
-from torch_geometric.nn import conv
 torch.backends.cudnn.enabled = False
 
 
@@ -13,13 +12,11 @@ class DRMGCN(nn.Module):
         super(DRMGCN, self).__init__()
         self.args = args
 
-        self.gcn_x1_f = GCNConv(self.args.fm, self.args.fm
+        self.gcn_x1_f = GCNConv(self.args.fm, self.args.fm)
         self.gcn_x2_f = GCNConv(self.args.fm, self.args.fm)
-     
 
         self.gcn_y1_f = GCNConv(self.args.fd, self.args.fd)
         self.gcn_y2_f = GCNConv(self.args.fd, self.args.fd)
-        
 
         self.globalAvgPool_x = nn.MaxPool2d((self.args.fm, self.args.drug_number), (1, 1)) 
         self.globalAvgPool_y = nn.MaxPool2d((self.args.fd, self.args.disease_number), (1, 1))
@@ -51,8 +48,6 @@ class DRMGCN(nn.Module):
 
     def forward(self, data):
 
-        
-
         torch.manual_seed(1)
         x_m = torch.randn(self.args.drug_number, self.args.fm)
         x_d = torch.randn(self.args.disease_number, self.args.fd)
@@ -60,9 +55,7 @@ class DRMGCN(nn.Module):
         x_m_f1 = torch.relu(self.gcn_x1_f(x_m.cuda(), data['mm_f']['edges'].cuda(), data['mm_f']['data_matrix'][data['mm_f']['edges'][0], data['mm_f']['edges'][1]].cuda()))
         x_m_f2 = torch.relu(self.gcn_x2_f(x_m_f1, data['mm_f']['edges'].cuda(), data['mm_f']['data_matrix'][data['mm_f']['edges'][0], data['mm_f']['edges'][1]].cuda()))
         
-        XM = torch.cat((x_m_f1, x_m_f2), 1).t() 
-        
-
+        XM = torch.cat((x_m_f1, x_m_f2), 1).t()
         XM = XM.view(1, self.args.drview*self.args.gcn_layers, self.args.fm, -1)
 
         x_channel_attenttion = self.globalAvgPool_x(XM)
@@ -71,22 +64,18 @@ class DRMGCN(nn.Module):
         x_channel_attenttion = torch.relu(x_channel_attenttion)
         x_channel_attenttion = self.fc2_x(x_channel_attenttion)
         x_channel_attenttion = self.sigmoidx(x_channel_attenttion)
- 
         x_channel_attenttion = x_channel_attenttion.view(x_channel_attenttion.size(0), x_channel_attenttion.size(1), 1, 1)
 
         XM_channel_attention = x_channel_attenttion * XM
         XM_channel_attention = torch.relu(XM_channel_attention)
+
         x = self.cnn_x(XM_channel_attention)
         x = x.view(self.args.out_channels, self.args.drug_number).t()
 
-
         y_d_f1 = torch.relu(self.gcn_y1_f(x_d.cuda(), data['dd_f']['edges'].cuda(), data['dd_f']['data_matrix'][data['dd_f']['edges'][0], data['dd_f']['edges'][1]].cuda()))
         y_d_f2 = torch.relu(self.gcn_y2_f(y_d_f1, data['dd_f']['edges'].cuda(), data['dd_f']['data_matrix'][data['dd_f']['edges'][0], data['dd_f']['edges'][1]].cuda()))
-        
 
         YD = torch.cat((y_d_f1, y_d_f2), 1).t()
-   
-
         YD = YD.view(1, self.args.diview*self.args.gcn_layers, self.args.fd, -1)
 
         y_channel_attenttion = self.globalAvgPool_y(YD)
@@ -96,13 +85,11 @@ class DRMGCN(nn.Module):
         y_channel_attenttion = self.fc2_y(y_channel_attenttion)
         y_channel_attenttion = self.sigmoidy(y_channel_attenttion)
         y_channel_attenttion = y_channel_attenttion.view(y_channel_attenttion.size(0), y_channel_attenttion.size(1), 1,1)
-        YD_channel_attention = y_channel_attenttion * YD
 
+        YD_channel_attention = y_channel_attenttion * YD
         YD_channel_attention = torch.relu(YD_channel_attention)
 
         y = self.cnn_y(YD_channel_attention)
         y = y.view(self.args.out_channels, self.args.disease_number).t()
 
         return x.mm(y.t())
-
-
