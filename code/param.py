@@ -8,7 +8,7 @@ def parameter_parser():
     parser.add_argument("--drview",
                         type=int,
                         default=1,
-                        help="views number. Default is 1(1 datasets for drug  sim)")
+                        help="views number. Default is 1(1 datasets for drug sim)")
 
     parser.add_argument("--diview",
                         type=int,
@@ -69,10 +69,5 @@ def parameter_parser():
                         nargs="?",
                         default="../datasets",
                         help="Training datasets.")
-
-    parser.add_argument("--shiyan",
-                        type=int,
-                        default=0,
-                        help="0代表正常实验，1代表单个疾病独立实验.")
 
     return parser.parse_args()
