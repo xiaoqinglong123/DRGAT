@@ -22,4 +22,4 @@ Run main.py to RUN DRMGCN.
 
 #### Contacts
 
-
+If you have any questions or comments, please feel free to email ruguanggg@163.com
