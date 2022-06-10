@@ -19,15 +19,13 @@ def show_auc(ymat,ldi):
 
     precision, recall, prth = precision_recall_curve(y_true, ymat)
     aupr = auc(recall, precision)
-    # f1score=f1_score(y_true, ymat, average='binary')
 
-    #画图
-    # np.savetxt('roc88.txt',np.vstack((fpr,tpr)),fmt='%10.5f',delimiter=',')
-    # rocdata = np.loadtxt('roc88.txt', delimiter=',')
-    np.savetxt('pr8995.txt',np.vstack((recall,precision)),fmt='%10.5f',delimiter=',')
+    np.savetxt('roc.txt',np.vstack((fpr,tpr)),fmt='%10.5f',delimiter=',')
+    rocdata = np.loadtxt('roc88.txt', delimiter=',')
+    np.savetxt('pr.txt',np.vstack((recall,precision)),fmt='%10.5f',delimiter=',')
     prdata = np.loadtxt('pr8995.txt',delimiter=',')
     plt.figure()
-    # plt.plot(rocdata[0],rocdata[1])
+    plt.plot(rocdata[0],rocdata[1])
     plt.plot(prdata[0],prdata[1])
     plt.show()
 
