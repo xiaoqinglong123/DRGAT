@@ -12,7 +12,7 @@ def parameter_parser():
 
     parser.add_argument("--diview",
                         type=int,
-                        default=1,  # 单视图记得改成1
+                        default=1,  
                         help="views number. Default is 1(1 datasets for disease sim)")
 
     parser.add_argument("--epoch",
