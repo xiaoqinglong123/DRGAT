@@ -3,7 +3,7 @@ import argparse
 
 def parameter_parser():
 
-    parser = argparse.ArgumentParser(description="Run DRMGCN.")
+    parser = argparse.ArgumentParser(description="Run DRGAT.")
 
     parser.add_argument("--drview",
                         type=int,
@@ -20,10 +20,10 @@ def parameter_parser():
                         default=10000,
                         help="Number of training epochs. Default is 10000.")
 
-    parser.add_argument("--gcn-layers",
+    parser.add_argument("--gat-layers",
                         type=int,
-                        default=2,
-                        help="Number of Graph Convolutional Layers. Default is 2.")
+                        default=1,
+                        help="Number of Graph attention Layers. Default is 1.")
 
     parser.add_argument("--drug-number",
                         type=int,
@@ -37,12 +37,12 @@ def parameter_parser():
 
     parser.add_argument("--fm",
                         type=int,
-                        default=512,
+                        default=128,
                         help="drug feature dimensions. Default is 256.")
 
     parser.add_argument("--fd",
                         type=int,
-                        default=512,
+                        default=128,
                         help="disease number. Default is 256.")
 
     parser.add_argument("--validation",
