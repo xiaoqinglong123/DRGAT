@@ -1,8 +1,8 @@
 
-# DRMGCN
-This code is the implementation of DRMGCN
+# DRGAT
+This code is the implementation of DRGAT
 
-DRMGCN： Multichannel Attention Graph Convolutional Network for drug repositioning
+DRGAT： Graph attention networks for drug repositioning
 #### Requirements
 
 python (tested on version 3.7)
