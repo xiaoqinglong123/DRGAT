@@ -1,5 +1,5 @@
 from param import parameter_parser
-from DRMGCN import DRMGCN
+from DRGAT import DRGAT
 from dataprocessing import data_pro
 import torch
 import numpy as np
@@ -55,7 +55,7 @@ def crossCV(args):
     dataset = data_pro(args)
     traindata = A.clone()
 
-    model = DRMGCN(args)
+    model = DRGAT(args)
     model.cuda()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
