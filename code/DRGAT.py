@@ -51,10 +51,10 @@ class DRGAT(nn.Module):
         if self.args.gat_layers==3:
             XM = torch.cat((XM1, XM2,XM3), 1).t()
 
-        XM = XM.view(1, self.args.gat_layers, self.args.fm, -1)#[1, 2, 512, 593]
+        XM = XM.view(1, self.args.gat_layers, self.args.fm, -1)
 
-        x = self.cnn_x(XM)#[1, 128, 1, 593]
-        x = x.view(self.args.emd, self.args.drug_number).t()#[593, 128]
+        x = self.cnn_x(XM)
+        x = x.view(self.args.emd, self.args.drug_number).t()
 
 
 
